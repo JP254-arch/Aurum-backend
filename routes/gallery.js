@@ -25,7 +25,7 @@ router.post('/', auth, galleryUpload.single('image'), async (req, res) => {
   if (!req.file) return res.status(400).json({ success: false, message: 'Image file required' });
   try {
     const { title, caption, category, featured, order } = req.body;
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const baseUrl = `https://${req.get('host')}`;
     const image = await GalleryImage.create({
       title: title || req.file.originalname,
       caption,
