@@ -24,8 +24,8 @@ const baseTemplate = (content) => `
   </td></tr>
   <tr><td style="padding:40px;color:#F7F3EC;">${content}</td></tr>
   <tr><td style="padding:20px 40px;border-top:0.5px solid rgba(201,168,76,0.15);text-align:center;">
-    <div style="font-size:10px;letter-spacing:0.15em;color:#555;">© 2026 Aurum Ristorante · 12 Via della Luce, Milano</div>
-    <div style="font-size:10px;color:#555;margin-top:6px;">+39 02 8765 4321 · reservations@aurum-ristorante.com</div>
+    <div style="font-size:10px;letter-spacing:0.15em;color:#555;">© 2026 Aurum Ristorante · 12 Via della Luce, Nairobi</div>
+    <div style="font-size:10px;color:#555;margin-top:6px;">+254 740 623 879 · reservations@aurum-ristorante.com</div>
   </td></tr>
 </table>
 </td></tr></table>
@@ -62,7 +62,7 @@ const emailService = {
       ${reservation.requests ? `<p style="font-size:12px;color:#aaa;line-height:1.7;"><strong style="color:#C9A84C;">Special requests noted:</strong> ${reservation.requests}</p>` : ''}
       <p style="font-size:12px;color:#aaa;line-height:1.8;margin-top:20px;">To modify or cancel your reservation, please call us at <span style="color:#C9A84C;">+39 02 8765 4321</span> or reply to this email at least 24 hours in advance.</p>
       <div style="margin-top:28px;text-align:center;">
-        <a href="https://wa.me/390287654321" style="display:inline-block;background:#C9A84C;color:#000;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:14px 32px;text-decoration:none;">WhatsApp Us</a>
+        <a href="https://wa.me/254740623879" style="display:inline-block;background:#C9A84C;color:#000;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;padding:14px 32px;text-decoration:none;">WhatsApp Us</a>
       </div>`;
     return transporter.sendMail({
       from:    process.env.EMAIL_FROM,
