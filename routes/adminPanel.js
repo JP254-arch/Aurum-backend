@@ -1,14 +1,14 @@
-const express = require('express');
-const router  = express.Router();
-const auth    = require('../middleware/auth');
-const Reservation = require('../models/Reservation');
-const MenuItem    = require('../models/MenuItem');
-const GalleryImage= require('../models/GalleryImage');
-const jwt         = require('jsonwebtoken');
-const Admin       = require('../models/Admin');
+const express = require("express");
+const router = express.Router();
+const auth = require("../middleware/auth");
+const Reservation = require("../models/Reservation");
+const MenuItem = require("../models/MenuItem");
+const GalleryImage = require("../models/GalleryImage");
+const jwt = require("jsonwebtoken");
+const Admin = require("../models/Admin");
 
 // ── Helper: render full admin page ──────────────────────
-const adminPage = (title, bodyContent, activePage = '') => `<!DOCTYPE html>
+const adminPage = (title, bodyContent, activePage = "") => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -111,11 +111,11 @@ select option{background:#1a1a1a;}
 <aside class="sidebar">
   <div class="sidebar-logo"><span>Aurum</span><small>Admin Panel</small></div>
   <nav>
-    <a href="/admin" class="nav-item ${activePage==='dashboard'?'active':''}"><span class="nav-icon">◈</span> Dashboard</a>
-    <a href="/admin/reservations" class="nav-item ${activePage==='reservations'?'active':''}"><span class="nav-icon">◻</span> Reservations</a>
-    <a href="/admin/menu" class="nav-item ${activePage==='menu'?'active':''}"><span class="nav-icon">◇</span> Menu</a>
-    <a href="/admin/gallery" class="nav-item ${activePage==='gallery'?'active':''}"><span class="nav-icon">◈</span> Gallery</a>
-    <a href="/admin/locations" class="nav-item ${activePage==='locations'?'active':''}"><span class="nav-icon">◉</span> Locations</a>
+    <a href="/admin" class="nav-item ${activePage === "dashboard" ? "active" : ""}"><span class="nav-icon">◈</span> Dashboard</a>
+    <a href="/admin/reservations" class="nav-item ${activePage === "reservations" ? "active" : ""}"><span class="nav-icon">◻</span> Reservations</a>
+    <a href="/admin/menu" class="nav-item ${activePage === "menu" ? "active" : ""}"><span class="nav-icon">◇</span> Menu</a>
+    <a href="/admin/gallery" class="nav-item ${activePage === "gallery" ? "active" : ""}"><span class="nav-icon">◈</span> Gallery</a>
+    <a href="/admin/locations" class="nav-item ${activePage === "locations" ? "active" : ""}"><span class="nav-icon">◉</span> Locations</a>
   </nav>
   <div class="sidebar-footer">
     <button class="logout-btn" onclick="logout()">Sign Out</button>
@@ -136,7 +136,7 @@ if(el){const tick=()=>{el.textContent=new Date().toLocaleTimeString('en-GB',{hou
 </body></html>`;
 
 // ── LOGIN PAGE ──────────────────────────────────────────
-router.get('/login', (req, res) => {
+router.get("/login", (req, res) => {
   res.send(`<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Admin Login · Aurum</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
@@ -178,24 +178,36 @@ document.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
 });
 
 // ── DASHBOARD ───────────────────────────────────────────
-router.get('/', auth, async (req, res) => {
+router.get("/", auth, async (req, res) => {
   const [totalRes, pendingRes, todayRes, totalMenu] = await Promise.all([
     Reservation.countDocuments(),
-    Reservation.countDocuments({ status: 'pending' }),
-    Reservation.countDocuments({ date: { $gte: new Date(new Date().setHours(0,0,0,0)), $lt: new Date(new Date().setHours(23,59,59,999)) } }),
+    Reservation.countDocuments({ status: "pending" }),
+    Reservation.countDocuments({
+      date: {
+        $gte: new Date(new Date().setHours(0, 0, 0, 0)),
+        $lt: new Date(new Date().setHours(23, 59, 59, 999)),
+      },
+    }),
     MenuItem.countDocuments({ available: true }),
   ]);
   const recent = await Reservation.find().sort({ createdAt: -1 }).limit(8);
-  const rows = recent.map(r => `<tr>
+  const rows = recent
+    .map(
+      (r) => `<tr>
     <td>${r.firstName} ${r.lastName}</td>
-    <td>${new Date(r.date).toLocaleDateString('en-GB')}</td>
+    <td>${new Date(r.date).toLocaleDateString("en-GB")}</td>
     <td>${r.time}</td>
     <td>${r.guests}</td>
     <td><span class="badge badge-${r.status}">${r.status}</span></td>
     <td><a href="/admin/reservations" class="btn btn-sm">Manage</a></td>
-  </tr>`).join('');
+  </tr>`
+    )
+    .join("");
 
-  res.send(adminPage('Dashboard', `
+  res.send(
+    adminPage(
+      "Dashboard",
+      `
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">Total Reservations</div><div class="stat-val">${totalRes}</div><div class="stat-sub">All time</div></div>
       <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-val" style="color:#C9A84C;">${pendingRes}</div><div class="stat-sub">Awaiting confirmation</div></div>
@@ -206,84 +218,108 @@ router.get('/', auth, async (req, res) => {
       <div class="card-header"><span class="card-title">Recent Reservations</span><a href="/admin/reservations" class="btn btn-sm">View All</a></div>
       <table><thead><tr><th>Guest</th><th>Date</th><th>Time</th><th>Guests</th><th>Status</th><th></th></tr></thead>
       <tbody>${rows || '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px;">No reservations yet</td></tr>'}</tbody></table>
-    </div>`, 'dashboard'));
+    </div>`,
+      "dashboard"
+    )
+  );
 });
 
 // ── RESERVATIONS ────────────────────────────────────────
-router.get('/reservations', auth, async (req, res) => {
+router.get("/reservations", auth, async (req, res) => {
   const { status, date } = req.query;
   const filter = {};
-  if (status && status !== 'all') filter.status = status;
+  if (status && status !== "all") filter.status = status;
   if (date) {
     const d = new Date(date);
     filter.date = { $gte: d, $lt: new Date(d.getTime() + 86400000) };
   }
-  const reservations = await Reservation.find(filter).sort({ date: 1, time: 1 }).limit(100);
+  const reservations = await Reservation.find(filter)
+    .sort({ date: 1, time: 1 })
+    .limit(100);
 
-  const rows = reservations.map(r => `<tr>
+  const rows = reservations
+    .map(
+      (r) => `<tr>
     <td><strong style="color:#F7F3EC;">${r.firstName} ${r.lastName}</strong><br><small style="color:#888;">${r.email}</small></td>
-    <td>${new Date(r.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</td>
+    <td>${new Date(r.date).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}</td>
     <td>${r.time}</td>
     <td>${r.guests}</td>
-    <td>${r.occasion !== 'none' ? r.occasion : '—'}</td>
+    <td>${r.occasion !== "none" ? r.occasion : "—"}</td>
     <td><span class="badge badge-${r.status}">${r.status}</span></td>
     <td>
       <select onchange="updateStatus('${r._id}',this.value)" style="background:#1a1a1a;border:0.5px solid rgba(201,168,76,0.2);color:#F7F3EC;font-size:9px;letter-spacing:0.1em;padding:4px 6px;cursor:pointer;">
-        <option ${r.status==='pending'?'selected':''}>pending</option>
-        <option ${r.status==='confirmed'?'selected':''}>confirmed</option>
-        <option ${r.status==='cancelled'?'selected':''}>cancelled</option>
-        <option ${r.status==='completed'?'selected':''}>completed</option>
+        <option ${r.status === "pending" ? "selected" : ""}>pending</option>
+        <option ${r.status === "confirmed" ? "selected" : ""}>confirmed</option>
+        <option ${r.status === "cancelled" ? "selected" : ""}>cancelled</option>
+        <option ${r.status === "completed" ? "selected" : ""}>completed</option>
       </select>
     </td>
     <td><button class="btn btn-sm btn-danger" onclick="deleteRes('${r._id}',this)">Delete</button></td>
-  </tr>`).join('');
+  </tr>`
+    )
+    .join("");
 
-  res.send(adminPage('Reservations', `
+  res.send(
+    adminPage(
+      "Reservations",
+      `
     <div class="filter-row">
       <select onchange="applyFilter()" id="f-status">
-        <option value="all" ${!status||status==='all'?'selected':''}>All Statuses</option>
-        <option value="pending" ${status==='pending'?'selected':''}>Pending</option>
-        <option value="confirmed" ${status==='confirmed'?'selected':''}>Confirmed</option>
-        <option value="cancelled" ${status==='cancelled'?'selected':''}>Cancelled</option>
-        <option value="completed" ${status==='completed'?'selected':''}>Completed</option>
+        <option value="all" ${!status || status === "all" ? "selected" : ""}>All Statuses</option>
+        <option value="pending" ${status === "pending" ? "selected" : ""}>Pending</option>
+        <option value="confirmed" ${status === "confirmed" ? "selected" : ""}>Confirmed</option>
+        <option value="cancelled" ${status === "cancelled" ? "selected" : ""}>Cancelled</option>
+        <option value="completed" ${status === "completed" ? "selected" : ""}>Completed</option>
       </select>
-      <input type="date" id="f-date" value="${date||''}" onchange="applyFilter()">
+      <input type="date" id="f-date" value="${date || ""}" onchange="applyFilter()">
       <button class="btn" onclick="document.getElementById('f-date').value='';applyFilter()">Clear</button>
     </div>
     <div class="card">
       <div class="card-header"><span class="card-title">Reservations (${reservations.length})</span></div>
       <table><thead><tr><th>Guest</th><th>Date</th><th>Time</th><th>Guests</th><th>Occasion</th><th>Status</th><th>Update</th><th></th></tr></thead>
-      <tbody>${rows||'<tr><td colspan="8" style="text-align:center;color:#888;padding:24px;">No reservations found</td></tr>'}</tbody></table>
+      <tbody>${rows || '<tr><td colspan="8" style="text-align:center;color:#888;padding:24px;">No reservations found</td></tr>'}</tbody></table>
     </div>
     <script>
     function applyFilter(){const s=document.getElementById('f-status').value,d=document.getElementById('f-date').value;location.href='/admin/reservations?status='+s+(d?'&date='+d:'');}
     async function updateStatus(id,status){const r=await fetch('/api/reservations/'+id+'/status',{method:'PATCH',headers:{'Content-Type':'application/json'},credentials:'include',body:JSON.stringify({status})});if(!r.ok)alert('Update failed');}
     async function deleteRes(id,btn){if(!confirm('Delete this reservation?'))return;const r=await fetch('/api/reservations/'+id,{method:'DELETE',credentials:'include'});if(r.ok)btn.closest('tr').remove();else alert('Delete failed');}
-    </script>`, 'reservations'));
+    </script>`,
+      "reservations"
+    )
+  );
 });
 
 // ── MENU MANAGEMENT ─────────────────────────────────────
-router.get('/menu', auth, async (req, res) => {
+router.get("/menu", auth, async (req, res) => {
   const items = await MenuItem.find().sort({ category: 1, order: 1 });
-  const cats = ['antipasti','primi','secondi','dolci','bevande'];
+  const cats = ["antipasti", "primi", "secondi", "dolci", "bevande"];
 
-  const rows = items.map(item => `<tr>
-    <td><strong>${item.name}</strong><br><small style="color:#888;">${item.description.slice(0,50)}…</small></td>
+  const rows = items
+    .map(
+      (item) => `<tr>
+    <td><strong>${item.name}</strong><br><small style="color:#888;">${item.description.slice(0, 50)}…</small></td>
     <td><span class="badge badge-pending">${item.category}</span></td>
     <td style="color:#C9A84C;font-family:'Cormorant Garamond',serif;font-size:16px;">€${item.price.toFixed(2)}</td>
-    <td>${item.tags?.join(', ')||'—'}</td>
+    <td>${item.tags?.join(", ") || "—"}</td>
     <td>
-      <label class="toggle"><input type="checkbox" ${item.available?'checked':''} onchange="toggleAvail('${item._id}',this.checked)"><span class="toggle-slider"></span></label>
+      <label class="toggle"><input type="checkbox" ${item.available ? "checked" : ""} onchange="toggleAvail('${item._id}',this.checked)"><span class="toggle-slider"></span></label>
     </td>
     <td>
-      <button class="btn btn-sm" onclick="editItem(${JSON.stringify(item).replace(/"/g,'&quot;')})">Edit</button>
+      <button class="btn btn-sm" onclick="editItem(${JSON.stringify(item).replace(/"/g, "&quot;")})">Edit</button>
       <button class="btn btn-sm btn-danger" onclick="deleteItem('${item._id}',this)">Del</button>
     </td>
-  </tr>`).join('');
+  </tr>`
+    )
+    .join("");
 
-  const catOptions = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+  const catOptions = cats
+    .map((c) => `<option value="${c}">${c}</option>`)
+    .join("");
 
-  res.send(adminPage('Menu', `
+  res.send(
+    adminPage(
+      "Menu",
+      `
     <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
       <button class="btn btn-gold" onclick="document.getElementById('add-modal').classList.add('open')">+ Add Item</button>
     </div>
@@ -361,31 +397,41 @@ router.get('/menu', auth, async (req, res) => {
     }
     async function deleteItem(id,btn){if(!confirm('Delete this item?'))return;const r=await fetch('/api/menu/'+id,{method:'DELETE',credentials:'include'});if(r.ok)btn.closest('tr').remove();}
     async function toggleAvail(id,val){await fetch('/api/menu/'+id,{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({available:val})});}
-    </script>`, 'menu'));
+    </script>`,
+      "menu"
+    )
+  );
 });
 
 // ── GALLERY MANAGEMENT ──────────────────────────────────
-router.get('/gallery', auth, async (req, res) => {
+router.get("/gallery", auth, async (req, res) => {
   const images = await GalleryImage.find().sort({ order: 1, createdAt: -1 });
-  const thumbs = images.map(img => `
+  const thumbs = images
+    .map(
+      (img) => `
     <div class="gallery-thumb">
       <img src="${img.url}" alt="${img.title}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22><rect fill=%22%231a1a1a%22 width=%22100%22 height=%22100%22/></svg>'">
       <div class="gallery-thumb-overlay">
         <span class="badge badge-pending">${img.category}</span>
         <button class="btn btn-sm btn-danger" onclick="delImg('${img._id}',this)">Delete</button>
-        ${img.featured?'<span style="font-size:9px;color:#C9A84C;">★ Featured</span>':''}
+        ${img.featured ? '<span style="font-size:9px;color:#C9A84C;">★ Featured</span>' : ""}
       </div>
       <div class="thumb-label">${img.title}</div>
-    </div>`).join('');
+    </div>`
+    )
+    .join("");
 
-  res.send(adminPage('Gallery', `
+  res.send(
+    adminPage(
+      "Gallery",
+      `
     <div style="display:flex;justify-content:flex-end;margin-bottom:20px;">
       <button class="btn btn-gold" onclick="document.getElementById('upload-modal').classList.add('open')">+ Upload Image</button>
     </div>
     <div class="card">
       <div class="card-header"><span class="card-title">Gallery (${images.length} images)</span></div>
       <div style="padding:16px;">
-        <div class="gallery-mgmt">${thumbs||'<p style="color:#888;padding:24px;">No images uploaded yet</p>'}</div>
+        <div class="gallery-mgmt">${thumbs || '<p style="color:#888;padding:24px;">No images uploaded yet</p>'}</div>
       </div>
     </div>
 
@@ -421,12 +467,18 @@ router.get('/gallery', auth, async (req, res) => {
       if(r.ok)location.reload();else{const d=await r.json();alert(d.message||'Upload failed');}
     }
     async function delImg(id,btn){if(!confirm('Delete this image?'))return;const r=await fetch('/api/gallery/'+id,{method:'DELETE',credentials:'include'});if(r.ok)btn.closest('.gallery-thumb').remove();}
-    </script>`, 'gallery'));
+    </script>`,
+      "gallery"
+    )
+  );
 });
 
 // ── LOCATIONS PAGE ──────────────────────────────────────
-router.get('/locations', auth, (req, res) => {
-  res.send(adminPage('Locations', `
+router.get("/locations", auth, (req, res) => {
+  res.send(
+    adminPage(
+      "Locations",
+      `
     <div class="card">
       <div class="card-header"><span class="card-title">Restaurant Locations</span></div>
       <div style="padding:24px;">
@@ -449,7 +501,10 @@ router.get('/locations', auth, (req, res) => {
           <code style="font-size:11px;color:#888;">GET /api/locations · GET /api/locations/:id · GET /api/locations/:id/hours</code>
         </div>
       </div>
-    </div>`, 'locations'));
+    </div>`,
+      "locations"
+    )
+  );
 });
 
 module.exports = router;
