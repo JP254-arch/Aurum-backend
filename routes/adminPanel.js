@@ -445,7 +445,7 @@ router.get("/gallery", auth, async (req, res) => {
           <div class="form-group"><label>Category</label>
             <select name="category">
               <option value="food">Food</option><option value="dining">Dining Room</option>
-              <option value="kitchen">Kitchen</option><option value="events">Events</option><option value="exterior">Exterior</option><option value="interior">Interior</option><option value="exterior">Drink</option>
+              <option value="kitchen">Kitchen</option><option value="events">Events</option><option value="exterior">Exterior</option><option value="interior">Interior</option><option value="drink">Drink</option>
             </select>
           </div>
           <div class="form-group" style="display:flex;align-items:center;gap:10px;">
