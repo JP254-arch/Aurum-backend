@@ -484,15 +484,15 @@ router.get("/locations", auth, (req, res) => {
       <div style="padding:24px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
           <div style="border:0.5px solid rgba(201,168,76,0.2);padding:24px;">
-            <div style="font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px;">Milan</div>
-            <div style="font-size:18px;font-family:'Cormorant Garamond',serif;margin-bottom:12px;">Aurum Milano</div>
-            <div style="font-size:12px;color:#888;line-height:1.9;">12 Via della Luce<br>Milan 20121, Italy<br>+39 02 8765 4321<br>Tue–Sun: 12:00–15:00, 19:00–23:30</div>
+            <div style="font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px;">Nairobi</div>
+            <div style="font-size:18px;font-family:'Cormorant Garamond',serif;margin-bottom:12px;">Aurum Nairobi</div>
+            <div style="font-size:12px;color:#888;line-height:1.9;">12 Via della Luce<br>Nairobi 00100, Kenya<br>+254 740 623 879<br>Tue–Sun: 12:00–15:00, 19:00–23:30</div>
             <div style="margin-top:12px;"><span class="badge badge-confirmed">Open Today</span></div>
           </div>
           <div style="border:0.5px solid rgba(201,168,76,0.2);padding:24px;">
             <div style="font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:#C9A84C;margin-bottom:12px;">Paris</div>
             <div style="font-size:18px;font-family:'Cormorant Garamond',serif;margin-bottom:12px;">Aurum Paris</div>
-            <div style="font-size:12px;color:#888;line-height:1.9;">5 Rue Saint-Honoré<br>Paris 75001, France<br>+33 1 4265 1234<br>Tue–Sun: 12:00–14:30, 19:00–23:00</div>
+            <div style="font-size:12px;color:#888;line-height:1.9;">5 Rue Saint-Honoré<br>Paris 75001, France<br>+254 740 623 879<br>Tue–Sun: 12:00–14:30, 19:00–23:00</div>
             <div style="margin-top:12px;"><span class="badge badge-confirmed">Open Today</span></div>
           </div>
         </div>
