@@ -439,18 +439,18 @@ router.get("/gallery", auth, async (req, res) => {
       <div class="modal">
         <div class="modal-title">Upload Image</div>
         <form onsubmit="uploadImg(event)" enctype="multipart/form-data">
-          <div class="form-group"><label>Image File *</label><input name="image" type="file" accept="image/*" required></div>
-          <div class="form-group"><label>Title</label><input name="title" placeholder="e.g. The Dining Room"></div>
-          <div class="form-group"><label>Caption</label><input name="caption" placeholder="Optional caption"></div>
+          <div class="form-group"><label>Image File *</label><input name="image" type="file" accept="image/*" required /></div>
+          <div class="form-group"><label>Title</label><input name="title" placeholder="e.g. The Dining Room" /></div>
+          <div class="form-group"><label>Caption</label><input name="caption" placeholder="Optional caption" /></div>
           <div class="form-group"><label>Category</label>
             <select name="category">
               <option value="food">Food</option><option value="dining">Dining Room</option>
-              <option value="kitchen">Kitchen</option><option value="events">Events</option><option value="exterior">Exterior</option>
+              <option value="kitchen">Kitchen</option><option value="events">Events</option><option value="exterior">Exterior</option><option value="interior">Interior</option><option value="exterior">Drink</option>
             </select>
           </div>
           <div class="form-group" style="display:flex;align-items:center;gap:10px;">
             <label style="margin:0;">Featured</label>
-            <label class="toggle"><input type="checkbox" name="featured" value="true"><span class="toggle-slider"></span></label>
+            <label class="toggle"><input type="checkbox" name="featured" value="true" /><span class="toggle-slider"></span></label>
           </div>
           <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:20px;">
             <button type="button" class="btn" onclick="document.getElementById('upload-modal').classList.remove('open')">Cancel</button>
